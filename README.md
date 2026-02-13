@@ -27,3 +27,12 @@ Notes:
 - On Wayland, synthetic input may be blocked; the script will fail to send real events in that case.
 - Use only on machines you control. Do not use automated input in contexts that violate terms of service.
 
+Changes from initial version:
+
+- Default startup delay is now **15 seconds** to give more time to focus the Minecraft window or cancel.
+- `W`, `A`, `S`, `D` are now weighted to appear significantly more often (better for movement).
+- Left and right mouse clicks are supported as actions (`mouse_left`, `mouse_right`) and will be used in Minecraft mode.
+- Movement keys and mouse clicks may be held for up to **5 seconds** to simulate sustained movement or continuous actions.
+
+Always test in simulation mode (`--simulate`) before enabling real input.
+
