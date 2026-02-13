@@ -36,7 +36,7 @@ def minecraft_keyset():
     # drop: q
     # hotbar: 1-9
     # swap hands: f
-    keys = ["w", "a", "s", "d", "space", "shift", "ctrl", "e", "q", "f"]
+    keys = ["w", "a", "s", "d", "space", "shift", "ctrl", "e", "q", "f", "mouse_left", "mouse_right"]
     keys += [str(i) for i in range(1, 10)]
     return keys
 
@@ -46,7 +46,12 @@ def all_keyset():
 
 
 def press_and_release(controller, key_name, duration):
+    # controller is a keyboard Controller; mouse actions handled here too
     from pynput.keyboard import Key
+    try:
+        from pynput.mouse import Button, Controller as MouseController
+    except Exception:
+        MouseController = None
 
     special = {
         "space": Key.space,
@@ -59,6 +64,21 @@ def press_and_release(controller, key_name, duration):
 
     key_obj = special.get(key_name, None)
     try:
+        if key_name == "mouse_left":
+            if MouseController is not None:
+                mouse = MouseController()
+                mouse.press(Button.left)
+                time.sleep(duration)
+                mouse.release(Button.left)
+            return
+        if key_name == "mouse_right":
+            if MouseController is not None:
+                mouse = MouseController()
+                mouse.press(Button.right)
+                time.sleep(duration)
+                mouse.release(Button.right)
+            return
+
         if key_obj is not None:
             controller.press(key_obj)
             time.sleep(duration)
@@ -77,8 +97,13 @@ def simulate_behavior(key_list, interval, count=None):
     i = 0
     try:
         while (count is None or i < count) and not stop_flag.is_set():
-            key = random.choice(key_list)
-            dur = random.uniform(0.03, max(interval, 0.15))
+            # weight WASD higher
+            weights = [5 if k in ("w", "a", "s", "d") else 1 for k in key_list]
+            key = random.choices(key_list, weights=weights, k=1)[0]
+            if key in ("w", "a", "s", "d", "mouse_left", "mouse_right"):
+                dur = random.uniform(0.05, 5.0)
+            else:
+                dur = random.uniform(0.03, max(interval, 0.15))
             print(f"[PRESS] {key} for {dur:.2f}s", end="\r", flush=True)
             time.sleep(interval)
             i += 1
@@ -113,9 +138,14 @@ def real_behavior(interval, key_list):
 
 def _real_typing_thread(controller, key_list, interval):
     while not stop_flag.is_set():
-        key = random.choice(key_list)
-        # Press duration random so some actions are taps, some are holds
-        dur = random.uniform(0.05, 0.4)
+        # weight WASD higher
+        weights = [5 if k in ("w", "a", "s", "d") else 1 for k in key_list]
+        key = random.choices(key_list, weights=weights, k=1)[0]
+        # hold longer for movement and mouse clicks (up to 5s)
+        if key in ("w", "a", "s", "d", "mouse_left", "mouse_right"):
+            dur = random.uniform(0.05, 5.0)
+        else:
+            dur = random.uniform(0.05, 0.4)
         press_and_release(controller, key, dur)
         time.sleep(interval)
 
@@ -126,7 +156,7 @@ def main():
     parser.add_argument("--mode", choices=["minecraft", "all"], default="minecraft", help="Key selection mode (default: minecraft)")
     parser.add_argument("--interval", type=float, default=0.12, help="Seconds between actions")
     parser.add_argument("--count", type=int, default=None, help="Number of actions (simulate mode only)")
-    parser.add_argument("--delay", type=float, default=5.0, help="Initial delay before starting")
+    parser.add_argument("--delay", type=float, default=15.0, help="Initial delay before starting")
     args = parser.parse_args()
 
     print(f"Mode: {args.mode} | {'SIMULATION' if args.simulate else 'REAL'} | Delay: {args.delay}s")
