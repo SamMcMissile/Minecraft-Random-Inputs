@@ -1,5 +1,5 @@
 # Keyboard-Slam
-I had a funny idea. I have now idea what I'm doing.
+I had a funny idea. I have know idea what I'm doing.
 
 ## auto_key.py
 
