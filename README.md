@@ -1,5 +1,5 @@
 # Minecraft-Random-Inputs
-I had a funny idea. I have know idea what I'm doing.
+A python script meant to randomly emulate keyboard inputs used in Minecraft
 
 ## auto_key.py
 
@@ -35,4 +35,9 @@ Changes from initial version:
 - Movement keys and mouse clicks may be held for up to **5 seconds** to simulate sustained movement or continuous actions.
 
 Always test in simulation mode (`--simulate`) before enabling real input.
+
+
+
+
+This was just a random idea I had. I don't really know what I'm doing.
 
