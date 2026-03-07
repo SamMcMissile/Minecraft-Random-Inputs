@@ -36,7 +36,9 @@ Changes from initial version:
 
 Always test in simulation mode (`--simulate`) before enabling real input.
 
+## Star History
 
+[![Star History Chart](https://api.star-history.com/image?repos=SamMcMissile/Minecraft-Random-Inputs&type=date&legend=top-left)](https://www.star-history.com/?repos=SamMcMissile%2FMinecraft-Random-Inputs&type=date&legend=top-left)
 
 
 This was just a random idea I had. I don't really know what I'm doing.
